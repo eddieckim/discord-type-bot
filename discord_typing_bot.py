@@ -3,7 +3,6 @@ import discord
 from dotenv import load_dotenv
 from discord import Intents, Client, Message
 from discord.ext import commands
-import speedtest
 import random
 import time
 import asyncio
