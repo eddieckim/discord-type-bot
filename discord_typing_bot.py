@@ -40,14 +40,6 @@ def get_random_words_from_file(file_path, num_words):
     
     return words_string
 
-prompts = [
-    "The quick brown fox jumps over the lazy dog.",
-    "Hello world! This is a typing speed test.",
-    "Typing speed and accuracy are important skills.",
-    "Practice makes perfect. Keep typing!",
-    "Measure your typing speed with this bot.",
-]
-
 user_typing_data = {}
 
 @client.command()
@@ -61,6 +53,12 @@ async def type(ctx):
             and m.channel == ctx.channel
         )
 
+@client.command()
+async def wordcount(ctx, num_words: int):
+    if num_words <= 0:
+        await stx.send("How many words do you want to type?")
+        return
+        
     try:
         await client.wait_for("message", check=check, timeout=30.0)
         await ctx.send("Starting the typing test in 3 seconds...")
@@ -71,8 +69,20 @@ async def type(ctx):
         await asyncio.sleep(1)
         await ctx.send("1...")
 
-        # prompt = random.choice(prompts)
-        prompt = get_random_words_from_file('words.json', 15)
+        # Select words with the total number of words requested
+        prompt = []
+        total_words = 0
+        while total_words < num_words:
+            sentence = random.choice(get_random_words_from_file)
+            prompt.append(sentence)
+            total_words += len(sentence.split())
+    
+        # Join chosen sentences into a single string
+        test_sentence = ' '.join(prompt)
+            
+        # # prompt = random.choice(prompts)
+        # prompt = get_random_words_from_file('words.json', 15)
+        
         user_typing_data[ctx.author.id] = {"prompt": prompt, "start_time": time.time()}
 
         await ctx.send(
